@@ -1,5 +1,6 @@
 package com.koleychik.test_spring_security_final.models;
 
+import com.koleychik.test_spring_security_final.security.Role;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -28,41 +29,62 @@ public class UserModel implements UserDetails {
     private Date createdAt;
     @LastModifiedDate
     private Date updatedAt;
-    private final boolean isAccountNonExpired, isAccountNonLocked, isCredentialsNonExpired, isEnabled;
-    private final Collection<? extends GrantedAuthority> authorities;
+    private boolean isAccountNonExpired = true, isAccountNonLocked = true, isCredentialsNonExpired = true, isEnabled = true;
+    private Role authorities = Role.USER;
+
+    public UserModel(String name, String lastName, String email, String password, int age, boolean isAccountNonExpired, boolean isAccountNonLocked, boolean isCredentialsNonExpired, boolean isEnabled, Role authorities) {
+        this.name = name;
+        this.lastName = lastName;
+        this.email = email;
+        this.password = password;
+        this.age = age;
+        this.isAccountNonExpired = isAccountNonExpired;
+        this.isAccountNonLocked = isAccountNonLocked;
+        this.isCredentialsNonExpired = isCredentialsNonExpired;
+        this.isEnabled = isEnabled;
+        this.authorities = authorities;
+    }
+
+    public UserModel(String name, String lastName, String email, String password, int age) {
+        this.name = name;
+        this.lastName = lastName;
+        this.email = email;
+        this.password = password;
+        this.age = age;
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        return authorities.getSimpleGrantedAuthorities();
     }
 
     @Override
     public String getPassword() {
-        return null;
+        return password;
     }
 
     @Override
     public String getUsername() {
-        return null;
+        return email;
     }
 
     @Override
     public boolean isAccountNonExpired() {
-        return false;
+        return isAccountNonExpired;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return false;
+        return isAccountNonLocked;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return false;
+        return isCredentialsNonExpired;
     }
 
     @Override
     public boolean isEnabled() {
-        return false;
+        return isEnabled;
     }
 }

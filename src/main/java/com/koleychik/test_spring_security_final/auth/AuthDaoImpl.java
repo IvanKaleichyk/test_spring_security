@@ -11,15 +11,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-@Component
+@Component("authDaoImpl")
 public class AuthDaoImpl implements AuthDao {
 
-    private final PasswordEncoder passwordEncoder;
+//    private final PasswordEncoder passwordEncoder;
     private final UserRepository repository;
 
+//    @Autowired
+//    public AuthDaoImpl(PasswordEncoder passwordEncoder, UserRepository repository) {
+//        this.passwordEncoder = passwordEncoder;
+//        this.repository = repository;
+//    }
+
     @Autowired
-    public AuthDaoImpl(PasswordEncoder passwordEncoder, UserRepository repository) {
-        this.passwordEncoder = passwordEncoder;
+    public AuthDaoImpl( UserRepository repository) {
         this.repository = repository;
     }
 
