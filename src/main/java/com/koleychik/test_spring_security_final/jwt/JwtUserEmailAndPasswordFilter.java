@@ -2,7 +2,6 @@ package com.koleychik.test_spring_security_final.jwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.koleychik.test_spring_security_final.models.AuthRequest;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -10,7 +9,6 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -20,7 +18,6 @@ public class JwtUserEmailAndPasswordFilter extends UsernamePasswordAuthenticatio
     private final AuthenticationManager manager;
     private final JwtUtils jwtUtils;
 
-    @Autowired
     public JwtUserEmailAndPasswordFilter(AuthenticationManager manager, JwtUtils jwtUtils) {
         this.manager = manager;
         this.jwtUtils = jwtUtils;
@@ -37,7 +34,7 @@ public class JwtUserEmailAndPasswordFilter extends UsernamePasswordAuthenticatio
                     authRequest.getPassword()
             );
 
-            return getAuthenticationManager().authenticate(authentication);
+            return manager.authenticate(authentication);
 
         } catch (IOException exception) {
             throw new RuntimeException(exception.getMessage());
@@ -45,7 +42,7 @@ public class JwtUserEmailAndPasswordFilter extends UsernamePasswordAuthenticatio
     }
 
     @Override
-    protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
+    protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) {
         String token = jwtUtils.createToken(authResult.getName(), authResult.getAuthorities());
 
         response.addHeader(jwtUtils.getHeader(), token);

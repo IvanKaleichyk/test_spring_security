@@ -1,6 +1,9 @@
 package com.koleychik.test_spring_security_final.jwt;
 
+import com.google.common.base.Strings;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -10,6 +13,8 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import javax.crypto.SecretKey;
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.util.Date;
 
 @Component
@@ -57,6 +62,29 @@ public class JwtUtils {
                 .setExpiration(validateAt)
                 .signWith(key)
                 .compact();
+    }
+
+//    public boolean validateToken(String token){
+//        if (token.startsWith(tokenPrefix)){
+//            token = token.replace(tokenPrefix, "");
+//        }
+//            try {
+//                Jws<Claims> claimsJws = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
+//                return !claimsJws.getBody().getExpiration().before(new Date());
+//            } catch (JwtException | IllegalArgumentException e) {
+////                throw new JwtAuthenticationException("JWT token is expired or invalid", HttpStatus.UNAUTHORIZED);
+//                return false;
+//            }
+//
+//    }
+
+    public String getTokenFromRequest(HttpServletRequest request) throws IOException {
+        String authorizationHeader = request.getHeader(getHeader());
+
+        if (Strings.isNullOrEmpty(authorizationHeader) || !authorizationHeader.startsWith(getTokenPrefix()))
+            throw new IOException("failed authorizationHeader, is = " + authorizationHeader);
+
+        return authorizationHeader.replace(getTokenPrefix(), "");
     }
 
     private SecretKey getSecretKey(){
