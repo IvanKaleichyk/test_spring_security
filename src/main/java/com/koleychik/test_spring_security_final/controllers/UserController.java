@@ -11,7 +11,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/users")
-@EnableGlobalMethodSecurity(prePostEnabled = true)
+//@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class UserController {
 
     private final UserRepository repository;
@@ -35,25 +35,25 @@ public class UserController {
 
     @GetMapping("/{id}")
     @PreAuthorize("hasAuthority('users:read')")
-    public UserModel getById(@PathVariable long id) {
+    public UserModel getById1(@PathVariable long id) {
         return repository.findById(id).orElseThrow(() -> new NullPointerException("cannot find object with id = " + id));
     }
 
-    @PutMapping("/{id}")
-    @PreAuthorize("hasAuthority('users:update')")
-    public void updateName(@PathVariable long id, @RequestParam String name) {
-        repository.updateName(id, name);
-    }
+//    @PutMapping("/{id}")
+//    @PreAuthorize("hasAuthority('users:update')")
+//    public void updateName1(@PathVariable long id, @RequestParam String name) {
+//        repository.updateName(id, name);
+//    }
 
     @PutMapping("/{id}")
     @PreAuthorize("hasAuthority('users:update')")
-    public void updateEmail(@PathVariable long id, @RequestParam String email) {
-        repository.updateName(id, email);
+    public void updateEmail1(@PathVariable long id, @RequestParam String email) {
+        repository.updateEmail(id, email);
     }
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAuthority('users:delete')")
-    public void delete(@PathVariable long id) {
+    public void delete1(@PathVariable long id) {
         repository.deleteById(id);
     }
 }

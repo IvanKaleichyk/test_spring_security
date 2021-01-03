@@ -23,5 +23,7 @@ public class InfoModel {
     @LastModifiedDate
     private Date updatedAt;
 
-
+    public InfoModel(String name) {
+        this.name = name;
+    }
 }

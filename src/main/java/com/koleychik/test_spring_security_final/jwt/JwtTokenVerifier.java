@@ -4,6 +4,8 @@ import com.google.common.base.Strings;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -22,6 +24,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class JwtTokenVerifier extends OncePerRequestFilter {
+
+    private final static Logger logger = LoggerFactory.getLogger(JwtTokenVerifier.class);
 
     private final JwtUtils jwtUtils;
 
@@ -44,7 +48,7 @@ public class JwtTokenVerifier extends OncePerRequestFilter {
 
         String username = body.getSubject();
 
-        List<Map<String, String>> authorities = (List<Map<String, String>>) body.get("authorities");
+        List<Map<String, String>> authorities = (List<Map<String, String>>) body.get("role");
 
         Set<SimpleGrantedAuthority> simpleGrantedAuthorities = authorities.stream()
                 .map(m -> new SimpleGrantedAuthority(m.get("authority")))
@@ -59,5 +63,11 @@ public class JwtTokenVerifier extends OncePerRequestFilter {
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         filterChain.doFilter(request, response);
+    }
+
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request){
+        logger.error("request.getServletPath() = " + request.getServletPath());
+        return request.getServletPath().startsWith("/auth");
     }
 }
